@@ -115,6 +115,10 @@ The dictionary is duplicated on purpose:
 `packages/js/src/dictionary.json` and `packages/python/bm_address/dictionary.py`
 must stay in sync when entries are added.
 
+## Related
+
+- [claude-skill-bm](https://github.com/ahozir-ux/claude-skill-bm) — Claude skill for Bahasa Malaysia that references this library for address normalisation
+
 ## License
 
 MIT — see [LICENSE](./LICENSE).

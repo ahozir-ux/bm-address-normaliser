@@ -1,6 +1,6 @@
 {
   "name": "bm-address-normaliser",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Expand abbreviated Malaysian addresses for display and text-to-speech.",
   "main": "src/index.js",
   "files": [
@@ -11,14 +11,18 @@
   },
   "keywords": [
     "malaysia",
-    "address",
-    "normalise",
-    "normalize",
-    "tts",
     "bahasa-malaysia",
-    "syllabify"
+    "address",
+    "nlp",
+    "tts",
+    "normaliser"
   ],
+  "author": "Ahmad Hozir <ahozir@gmail.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ahozir-ux/bm-address-normaliser.git"
+  },
   "engines": {
     "node": ">=18.0.0"
   }

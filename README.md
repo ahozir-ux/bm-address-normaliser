@@ -85,23 +85,48 @@ python -m unittest discover -s tests
 
 ## HTTP API (Cloudflare Worker)
 
-A thin Worker in `api/` wraps the JS library.
+A thin Worker in `api/` wraps the JS library. A live instance is deployed at:
+
+**https://bm-address-normaliser.ahozir.workers.dev**
+
+### Try it
+
+```bash
+# Health check
+curl https://bm-address-normaliser.ahozir.workers.dev/health
+# → {"ok":true}
+
+# Normalise via GET
+curl 'https://bm-address-normaliser.ahozir.workers.dev/?address=JLN+BKT+BINTANG,+KL'
+
+# Normalise via POST
+curl -X POST https://bm-address-normaliser.ahozir.workers.dev/ \
+  -H 'Content-Type: application/json' \
+  -d '{"address": "TMN MIDAH, KL"}'
+```
+
+All three return the same JSON shape as the libraries:
+
+```json
+{
+  "normalised": "Jalan Bukit Bintang, Kuala Lumpur",
+  "tts_ready":  "Ja-lan Bu-kit Bin-tang, Kua-la Lum-pur",
+  "expansions_applied": [
+    {"from": "JLN", "to": "Jalan"},
+    {"from": "BKT", "to": "Bukit"},
+    {"from": "KL",  "to": "Kuala Lumpur"}
+  ],
+  "ambiguous_flags": []
+}
+```
+
+### Deploy your own
 
 ```bash
 cd api
 npx wrangler dev      # local
-npx wrangler deploy   # to Cloudflare
+npx wrangler deploy   # to your Cloudflare account
 ```
-
-Endpoints:
-
-```
-GET  /?address=JLN+BKT+BINTANG,+KL
-POST /            { "address": "JLN BKT BINTANG, KL" }
-GET  /health      { "ok": true }
-```
-
-Each returns the same JSON shape as the libraries.
 
 ## Repository layout
 

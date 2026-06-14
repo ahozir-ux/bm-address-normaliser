@@ -140,6 +140,74 @@ The dictionary is duplicated on purpose:
 `packages/js/src/dictionary.json` and `packages/python/bm_address/dictionary.py`
 must stay in sync when entries are added.
 
+## Obsidian Integration
+
+Use the live API directly inside Obsidian via the [Templater plugin](https://github.com/SilentVoid13/Templater) — no installation needed beyond Templater itself.
+
+### Setup
+
+1. Install Templater from Obsidian Community Plugins
+2. In Templater settings, enable **Allow JS system commands**
+3. Create a new template file in your templates folder
+
+### Address Normaliser Template
+
+Create a file called `normalise-address.md` in your Obsidian templates folder with this content:
+
+```javascript
+<%*
+const raw = await tp.system.prompt("Enter Malaysian address");
+const encoded = encodeURIComponent(raw);
+const response = await fetch(
+  `https://bm-address-normaliser.ahozir.workers.dev/?address=${encoded}`
+);
+const data = await response.json();
+tR += `**Original:** ${data.normalised}\n`;
+tR += `**TTS-ready:** ${data.tts_ready}\n`;
+if (data.expansions_applied.length > 0) {
+  tR += `**Expanded:** ${data.expansions_applied.map(e => `${e.from}→${e.to}`).join(', ')}\n`;
+}
+if (data.ambiguous_flags.length > 0) {
+  tR += `**Flagged:** ${data.ambiguous_flags.map(f => `${f.token} (${f.reason})`).join(', ')}\n`;
+}
+%>
+```
+
+### Usage
+
+1. Open any Obsidian note
+2. Open command palette (`Cmd+P`)
+3. Run **Templater: Insert Template**
+4. Select `normalise-address`
+5. Type your abbreviated address when prompted
+6. The normalised result inserts inline into your note
+
+### Example Output
+
+Input: `JLN BKT BINTANG, KL`
+Original: Jalan Bukit Bintang, Kuala Lumpur
+
+TTS-ready: Ja-lan Bu-kit Bin-tang, Kua-la Lum-pur
+
+Expanded: JLN→Jalan, BKT→Bukit, KL→Kuala Lumpur
+
+### QuickAdd Alternative
+
+If you use [QuickAdd](https://github.com/chhoumann/quickadd) instead of Templater, create a Macro with this script:
+
+```javascript
+module.exports = async (params) => {
+  const raw = await params.quickAddApi.inputPrompt("Enter Malaysian address");
+  const encoded = encodeURIComponent(raw);
+  const response = await fetch(
+    `https://bm-address-normaliser.ahozir.workers.dev/?address=${encoded}`
+  );
+  const data = await response.json();
+  params.quickAddApi.notify(`✓ ${data.normalised}`);
+  return data.normalised;
+};
+```
+
 ## Related
 
 - [claude-skill-bm](https://github.com/ahozir-ux/claude-skill-bm) — Claude skill for Bahasa Malaysia that references this library for address normalisation
